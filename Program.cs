@@ -4,6 +4,7 @@ using DotnetIdentityWebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,21 @@ builder.Services.AddAuthentication(options =>
 	//DefaultChallengeScheme defines the authentication scheme that will be used to challenge unauthorized requests. When an unauthenticated request accesses a resource requiring authentication, ASP.NET Core will automatically issue a challenge response using the specified scheme, prompting the client to provide credentials or authenticate.
 
 	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+	options.TokenValidationParameters = new TokenValidationParameters()
+	{
+		ValidateActor=true,
+		// The "issuer" claim identifies the principal that issued the JWT. It typically represents the entity that generated the token. The issuer is usually a server or service responsible for authenticating users and generating tokens. For example, if you're using a service like Auth0 or Azure Active Directory to handle authentication and token issuance, the issuer would be the URL of that service.
+		ValidateIssuer = true,
+		//The "audience" claim identifies the recipients for which the JWT is intended. It specifies the intended audience that the JWT is meant for. This can be the specific application or service that should accept the token. When validating a JWT, the audience claim is typically checked to ensure that the token is intended for the recipient. For instance, if your application consumes tokens from a specific authorization server, the audience claim would contain the identifier of your application or service.
+		ValidateAudience = true,
+		RequireExpirationTime=true,
+		ValidateIssuerSigningKey=true,
+		//Since we have set the validate issuer and validate audience as true , we need to tell which are the valid issuer and audience
+		ValidIssuer=builder.Configuration.GetSection("Jwt:Issuer").Value,
+		ValidAudience= builder.Configuration.GetSection("Jwt:Audience").Value
+	};
 });
 
 
