@@ -10,6 +10,11 @@ As we are going to use Identity Context, install:-
 Microsoft.AspNetCore.Identity
 Microsoft.AspNetCore.Identity.EntityFrameworkCore
 
+
+We need JWT related packages
+
+Install Microsoft.AspNetCore.Authentication.JwtBearer
+
 ----Commands----
 
 dotnet ef migrations add Initial 

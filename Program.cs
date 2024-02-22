@@ -1,6 +1,7 @@
 using DotnetIdentityWebAPI.DbContext;
 using DotnetIdentityWebAPI.ServiceContracts;
 using DotnetIdentityWebAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +23,20 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 	//Then we need to tell it what kind of token we are going to use
 }).AddEntityFrameworkStores<AuthDbContext>().AddDefaultTokenProviders();
 
+
+builder.Services.AddAuthentication(options =>
+{
+	//DefaultAuthenticateScheme specifies the authentication scheme that will be used to authenticate incoming requests by default. This means that when a request requires authentication, ASP.NET Core will attempt to authenticate it using the specified scheme unless another scheme is explicitly specified.
+
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+
+	//DefaultChallengeScheme defines the authentication scheme that will be used to challenge unauthorized requests. When an unauthenticated request accesses a resource requiring authentication, ASP.NET Core will automatically issue a challenge response using the specified scheme, prompting the client to provide credentials or authenticate.
+
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+});
+
+
+
 builder.Services.AddTransient<IAuthService, AuthService>();
 
 builder.Services.AddControllers();
@@ -40,6 +55,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+//Make sure that the UseAuthentication() middleware comes before UseAuthorization()
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
