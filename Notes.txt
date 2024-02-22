@@ -1,4 +1,7 @@
-﻿Install Microsoft.EntityFrameworkCore
+﻿Thanks to : https://youtu.be/99-r3Y48SYE?si=7vdjTMbUNUWfPTad (Foad Alavi)
+
+
+Install Microsoft.EntityFrameworkCore
 Install Microsoft.EntityFrameworkCore.Design
 Install Microsoft.EntityFrameworkCore.SqlServer
 

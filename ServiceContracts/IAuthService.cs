@@ -3,7 +3,8 @@
 namespace DotnetIdentityWebAPI.ServiceContracts
 {
     public interface IAuthService
-    {
-        Task<bool> RegisterUser(LoginUser user);
+    {		
+		Task<bool> Login(LoginUser user);
+		Task<bool> RegisterUser(LoginUser user);
     }
 }

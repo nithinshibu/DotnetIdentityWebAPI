@@ -16,6 +16,9 @@ namespace DotnetIdentityWebAPI.Services
 		{
 			this._userManager = userManager;
 		}
+
+		
+
 		public async Task<bool> RegisterUser(LoginUser user)
 		{
 			var identityUser = new IdentityUser()
@@ -30,6 +33,20 @@ namespace DotnetIdentityWebAPI.Services
 			return result.Succeeded;
 
 
+		}
+		public async Task<bool> Login(LoginUser user)
+		{
+			//In Aspnetcore Identity , first we need to get the user from the database and check the password
+
+			var identityUser = await _userManager.FindByEmailAsync(user.UserName);
+			//No user found if identity is null
+			if (identityUser is null)
+			{
+				return false;
+			}
+
+			//Check whether the password is correct or not
+			return await _userManager.CheckPasswordAsync(identityUser, user.Password);
 		}
 	}
 }

@@ -16,16 +16,32 @@ namespace DotnetIdentityWebAPI.Controllers
         {
 			this._authService = authService;
 		}
-        [HttpPost]
-		public async Task<bool> RegisterUser(LoginUser user)
+        [HttpPost("Register")]
+		public async Task<IActionResult> RegisterUser(LoginUser user)
 		{
-			return await _authService.RegisterUser(user);
+            if (await _authService.RegisterUser(user))
+            {
+				return Ok("User Registered Successfully");
+			}
+			return BadRequest("User Registeration Failed");
+            
 		}
 		
-		[HttpGet]
-		public async Task Login(LoginUser user)
+		[HttpPost("Login")]
+		public async Task<IActionResult> Login(LoginUser user)
 		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest();
+			}
 
+			
+			if (await _authService.Login(user))
+			{
+				return Ok("Login Success");
+			}
+
+			return BadRequest("Login Failed");
 		}
 	}
 }
