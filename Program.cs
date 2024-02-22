@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,7 +49,8 @@ builder.Services.AddAuthentication(options =>
 		ValidateIssuerSigningKey=true,
 		//Since we have set the validate issuer and validate audience as true , we need to tell which are the valid issuer and audience
 		ValidIssuer=builder.Configuration.GetSection("Jwt:Issuer").Value,
-		ValidAudience= builder.Configuration.GetSection("Jwt:Audience").Value
+		ValidAudience= builder.Configuration.GetSection("Jwt:Audience").Value,
+		IssuerSigningKey= new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value))
 	};
 });
 
@@ -59,6 +62,32 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//This code will enable us to use authentication inside swagger itself
+builder.Services.AddSwaggerGen(c =>
+{
+	c.SwaggerDoc("v1", new OpenApiInfo { Title = "Dotnet Identity API", Version = "v1" });
+	c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+	{
+		In = ParameterLocation.Header,
+		Description = "Please insert JWT with Bearer into field",
+		Name = "Authorization",
+		Type = SecuritySchemeType.ApiKey
+	});
+	c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+				{
+					new OpenApiSecurityScheme
+					{
+						Reference = new OpenApiReference
+						{
+							Type = ReferenceType.SecurityScheme,
+							Id = "Bearer"
+						}
+					},
+					new string[] { }
+				}
+			});
+});
 
 var app = builder.Build();
 
