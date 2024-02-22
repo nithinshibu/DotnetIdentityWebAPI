@@ -38,7 +38,8 @@ namespace DotnetIdentityWebAPI.Controllers
 			
 			if (await _authService.Login(user))
 			{
-				return Ok("Login Success");
+				var tokenString = _authService.GenerateTokenString(user);
+				return Ok(tokenString);
 			}
 
 			return BadRequest("Login Failed");
