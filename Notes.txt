@@ -1,0 +1,18 @@
+﻿Install Microsoft.EntityFrameworkCore
+Install Microsoft.EntityFrameworkCore.Design
+Install Microsoft.EntityFrameworkCore.SqlServer
+
+As we are going to use Identity Context, install:-
+
+Microsoft.AspNetCore.Identity
+Microsoft.AspNetCore.Identity.EntityFrameworkCore
+
+----Commands----
+
+dotnet ef migrations add Initial 
+
+dotnet ef database update
+
+
+ASP.NET Identity is responsible for creating users, managing users , log-in , log-out  and managing the claims.
+
